@@ -1,0 +1,82 @@
+4...4-bit Parallel Adder and Subtractor using Full Adder and Full Subtractor
+
+1) 4-Bit Parallel Adder:- 
+module fullAdder(
+input a,
+input b,
+input c,
+output sum,
+output carry
+);
+assign sum = a ^ b ^ c;
+assign carry = (a&b) | (a&c) | (b&c);
+endmodule
+module parallelAdder(
+input[3:0] a,
+input[3:0] b,
+input c,
+output[3:0] sum,
+output[3:0] carry
+);
+fullAdder fa1(a[0],b[0],c,sum[0],carry[0]);
+fullAdder fa2(a[1],b[1],carry[0],sum[1],carry[1]);
+fullAdder fa3(a[2],b[2],carry[1],sum[2],carry[2]);
+fullAdder fa4(a[3],b[3],carry[2],sum[3],carry[3]);
+endmodule
+2) 4-bit Parallel Subtractor:- 
+module fullSubtractor(
+input a,
+input b,
+input c,
+output diff,
+output borrow
+);
+assign diff = a ^ b ^ c;
+assign borrow = (~a&b) | (~a&c) | (b&c);
+endmodule
+module parallelSubtractor(
+input[3:0] a,
+input[3:0] b,
+input c,
+output[3:0] diff,
+output[3:0] borrow
+);
+fullSubtractor fs1(a[0],b[0],c,diff[0],borrow[0]);
+fullSubtractor fs2(a[1],b[1],borrow[0],diff[1],borrow[1]);
+fullSubtractor fs3(a[2],b[2],borrow[1],diff[2],borrow[2]);
+fullSubtractor fs4(a[3],b[3],borrow[2],diff[3],borrow[3]);
+endmodule
+
+
+ TESTBENCH:- 1) 4-bit Parallel Adder:- 
+
+module testbench;
+reg [3:0]a;
+reg [3:0]b;
+reg c;
+wire [3:0]sum;
+wire [3:0]carry;
+parallelAdder
+uut(.a(a),.b(b),.c(c),.sum(sum),.carry(carry));
+initial begin
+a[0] = 0;a[1] = 1;a[2] = 1;a[3] = 0;
+b[0] = 1;b[1] = 0;b[2] = 0;b[3] = 1;
+c = 0;
+end
+endmodule
+2) 4-bit Full Subtractor:- 
+
+module testbench;
+reg [3:0]a;
+reg [3:0]b;
+reg c;
+wire [3:0]diff;
+wire [3:0]borrow;
+parallelSubtractor
+uut(.a(a),.b(b),.c(c),.diff(diff),.borrow(borrow));
+initial begin
+a[0] = 0;a[1] = 1;a[2] = 1;a[3] = 0;
+b[0] = 1;b[1] = 0;b[2] = 0;b[3] = 1;
+c = 0;
+end
+endmodule

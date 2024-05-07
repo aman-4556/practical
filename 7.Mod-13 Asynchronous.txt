@@ -1,0 +1,53 @@
+7.Mod-13 Asynchronous
+Counter using JK Flip Flop
+
+module jkFlipFlop(input j,k,clk,rstn, output reg q);
+initial
+begin
+q <= 1'b0;
+end
+always @(negedge clk or negedge rstn)
+begin
+if(!rstn)
+begin
+q <= 0;
+end
+else
+begin
+case({j,k})
+2'b00 : q <= q;
+2'b01 : q <= 1'b0;
+2'b10 : q <= 1'b1;
+2'b11 : q <= ~q;
+endcase
+end
+end
+endmodule
+
+
+module asyncCounter(input clk,rstn, output [3:0] q);
+// Up-Counter
+not (x,q[1]);
+not (y,q[0]);
+and(rstn,q[3],q[2],x,y);
+jkFlipFlop jk0(1,1,clk,rstn,q[0]);
+jkFlipFlop jk1(1,1,q[0],rstn,q[1]);
+jkFlipFlop jk2(1,1,q[1],rstn,q[2]);
+jkFlipFlop jk3(1,1,q[2],rstn,q[3]);
+endmodule
+
+
+ TESTBENCH :- 
+
+module tb;
+reg clk,rstn;
+wire[3:0] q;
+asyncCounter uut(clk,rstn,q);
+always #5 clk = ~clk;
+initial
+begin
+clk = 0; rstn = 0;
+#5 rstn = 1;
+#200 $finish;
+end
+endmodule

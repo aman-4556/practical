@@ -1,0 +1,77 @@
+3.Half Subtractor and Full Subtractor using Gate Level Modelling
+
+1) HALF SUBTRACTOR:- 
+
+module halfSubtractor(
+input a, input b, output diff, output borrow
+);
+xor(diff,a,b);
+not(notA,a);
+and(borrow,notA,b);
+endmodule
+
+2) FULL SUBTRACTOR:- 
+
+module fullSubtractor(
+input a, input b,
+A B C D Bout
+0 0 0 0 0
+0 0 1 1 1
+0 1 0 1 1
+0 1 1 0 1
+1 0 0 1 0
+1 0 1 0 0
+1 1 0 0 0
+1 1 1 1 1
+input c, output diff, output borrow
+);
+xor(diff,a,b,c);
+not(notA,a);
+and(x,notA,b);
+and(y,b,c);
+and(z,notA,c);
+or(borrow,x,y,z);
+Endmodule
+ TESTBENCH:- 1) HALF SUBTRACTOR:- 
+module testbench;
+reg a,b;
+wire s,c;
+halfSubtractor uut(.a(a),.b(b),.diff(s),.borrow(c));
+initial begin
+a = 0; b = 0;
+#100
+a = 0; b = 1;
+#100
+a = 1; b = 0;
+#100
+a = 1; b = 1;
+#100
+$finish;
+end
+endmodule
+2) FULL SUBTRACTOR:-
+ module testbench;
+reg a,b,c;
+wire diff,borrow;
+fullSubtractor
+uut(.a(a),.b(b),.c(c),.diff(diff),.borrow(borrow));
+initial begin
+a = 0; b = 0; c = 0;
+#100
+a = 0; b = 0; c = 1;
+#100
+a = 0; b = 1; c = 0;
+#100
+a = 0; b = 1; c = 1;
+#100
+a = 1; b = 0; c = 0;
+#100
+a = 1; b = 0; c = 1;
+#100
+a = 1; b = 1; c = 0;
+#100
+a = 1; b = 1; c = 1;
+#100
+$finish;
+end
+endmodule

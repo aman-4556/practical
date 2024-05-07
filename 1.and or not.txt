@@ -1,0 +1,129 @@
+1.To design and simulate AND, OR and NOT gates
+using gate level, data flow and behavioural modelling
+
+DATA FLOW MODELLING:- 1) AND GATE:
+
+module andGate(input A,input B,output Y);
+assign Y = A & B;
+endmodule
+
+2) OR GATE:
+module orGate(input A,input B,output Y);
+assign Y = A ^ B;
+endmodule
+3) NOT GATE:
+module notGate(input A,output Y);
+assign Y = ~A;
+endmodule
+
+GATE LEVEL MODELLING:- 1) AND GATE:
+
+module andGate(input A,input B,output Y);
+and(Y,A,B);
+endmodule
+2) OR GATE:
+module orGate(input A,input B,output Y);
+or(Y,A,B);
+endmodule
+3) NOT GATE:
+module notGate(input A,output Y);
+not(Y,A);
+endmodule
+
+ BEHAVIOURAL MODELLING:- 1) AND GATE:
+,,,,,,,,,,,,,,,,,,,,,
+
+module andGate (output reg Y, input A, B);
+always @ (A or B) begin
+    if (A == 1'b1 & B == 1'b1) begin
+        Y = 1'b1;
+    end
+    else 
+        Y = 1'b0; 
+end
+endmodule
+,,,,,,,,,,,,,,,,,,optional,,,
+
+module andGate(input A,input B,output Y);
+
+initial
+begin
+Y = 0;
+end
+always @(A or B)
+case({A,B})
+0: begin Y=0; end
+1: begin Y=0; end
+2: begin Y=0; end
+3: begin Y=1; end
+endcase
+endmodule
+2) OR GATE:
+module orGate(input A,input B,output Y);
+initial
+begin
+Y = 0;
+end
+always @(A or B)
+case({A,B})
+0: begin Y=0; end
+1: begin Y=1; end
+2: begin Y=1; end
+3: begin Y=1; end
+endcase
+endmodule
+3) NOT GATE:
+module notGate(input A,output Y);
+initial
+begin
+Y = 0;
+end
+always @(A or B)
+case({A})
+0: begin Y=1; end
+1: begin Y=0; end
+endcase
+endmodule
+
+
+
+ TESTBENCH:- 1) AND GATE:-
+
+module testBench;
+reg A,B;
+wire Y;
+andGate uut(.A(A),.B(B),.Y(Y));
+initial
+begin
+A = 0; B = 0; #100;
+A = 0; B = 1; #100;
+A = 1; B = 0; #100;
+A = 1; B = 1; #100;
+end
+endmodule
+2) OR GATE:- 
+
+module testBench;
+reg A,B;
+wire Y;
+orGate uut(.A(A),.B(B),.Y(Y));
+initial
+begin
+A = 0; B = 0; #100;
+A = 0; B = 1; #100;
+A = 1; B = 0; #100;
+A = 1; B = 1; #100;
+end
+endmodule
+3) NOT GATE:- 
+
+module testBench;
+reg A;
+wire Y;
+notGate uut(.A(A),.Y(Y));
+initial
+begin
+A = 0; #100;
+A = 1; #100;
+end
+endmodule

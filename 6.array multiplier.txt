@@ -1,0 +1,67 @@
+6.array multiplier
+
+module halfAdder(input a,input b,output s0,output c0);
+assign s0 = a ^ b;
+assign c0 = a & b;
+endmodule
+
+
+module fullAdder(input a,input b,input cin,output
+s0,output c0);
+assign s0 = a ^ b ^ cin;
+assign c0 = (a & b) | (b & cin) | (a & cin);
+endmodule
+
+
+module arrayMultiplier(input [3:0] A,B, output[7:0] z);
+reg signed p[4][4];
+wire [10:0] c;
+wire [5:0] s;
+genvar g;
+generate
+for(g = 0; g<4; g++) begin
+and a0(p[g][0], A[g], B[0]);
+and a1(p[g][1], A[g], B[1]);
+and a2(p[g][2], A[g], B[2]);
+and a3(p[g][3], A[g], B[3]);
+end
+endgenerate
+assign z[0] = p[0][0];
+//row 0
+halfAdder h0(p[0][1], p[1][0], z[1], c[0]);
+halfAdder h1(p[1][1], p[2][0], s[0], c[1]);
+halfAdder h2(p[2][1], p[3][0], s[1], c[2]);
+//row1
+fullAdder f0(p[0][2], c[0], s[0], z[2], c[3]);
+fullAdder f1(p[1][2], c[1], s[1], s[2], c[4]);
+fullAdder f2(p[2][2], c[2], p[3][1], s[3], c[5]);
+//row2
+fullAdder f3(p[0][3], c[3], s[2], z[3], c[6]);
+fullAdder f4(p[1][3], c[4], s[3], s[4], c[7]);
+fullAdder f5(p[2][3], c[5], p[3][2], s[5], c[8]);
+//row3
+halfAdder h3(c[6], s[4], z[4], c[9]);
+fullAdder f6(c[9], c[7], s[5], z[5], c[10]);
+fullAdder f7(c[10], c[8], p[3][3], z[6], z[7]);
+endmodule
+
+
+
+ TESTBENCH :- 
+
+module tb;
+reg [3:0] A,B;
+wire[7:0] z;
+arrayMultiplier am(A,B,z);
+initial
+begin
+$dumpfile("dump.vcd"); $dumpvars;
+$monitor("A = %0d: B = %0d --> P(dec) = %0d"
+, A,
+B,z);
+A = 1; B = 5; #3;
+A = 4; B = 6; #3;
+A = 7; B = 8; #3;
+$finish;
+end
+endmodule

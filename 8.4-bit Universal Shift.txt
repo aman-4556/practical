@@ -1,0 +1,44 @@
+8.4-bit Universal Shift
+Register using d flip flop
+
+module shiftRegister #(parameter MSB = 4) (input
+d,clk,rstn,enable,direction,output reg [MSB-1:0] out);
+always @(posedge clk)
+if(!rstn)
+out <= 0;
+else
+begin
+if(enable)
+case(direction)
+0 : out <= {out[MSB-2:0],d};
+1 : out <= {d,out[MSB-1:1]};
+endcase
+else
+out <= out;
+end
+endmodule
+
+
+ TESTBENCH :- 
+
+module tb;
+parameter MSB = 4;
+reg clk,rstn,d,enable,direction;
+wire[MSB-1:0] out;
+shiftRegister #(MSB) uut(d,clk,rstn,enable,direction,out);
+always #10 clk = ~clk;
+initial
+begin
+$dumpfile("dump.vcd"); $dumpvars;
+clk <= 0; d <= 'h1; rstn <= 0; enable <= 0; direction <= 0;
+rstn <= 0;
+#20 rstn <= 1; enable = 1;
+repeat(7) @(posedge clk)
+d <= ~d;
+#10 direction <= 1;
+repeat(7) @(posedge clk)
+d <= ~d;
+repeat(7) @(posedge clk);
+$finish;
+end
+endmodule
